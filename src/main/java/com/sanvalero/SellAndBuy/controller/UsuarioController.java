@@ -74,18 +74,16 @@ public class UsuarioController {
         return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Modifica los atributos de un usuario identificado por su email y password.")
+    @Operation(summary = "Realiza un cambio de nombre de usuario identificado por su id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario modificado con éxito", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "404", description = "El usuario no existe", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "403", description = "La identificación es incorrecta", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "400", description = "No se han completado los campos obligatorios", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "200", description = "Nombre cambiado", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "404", description = "El usuario no existe", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PutMapping(value = "/usuarios/{email}/{password}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Usuario> modificarUsuario(@PathVariable String email, @PathVariable String password, @RequestBody Usuario usuarioEditado) {
-        logger.info("inicio modificarUsuario");
-        Usuario usuario = usuarioService.modifyUsuario(email, password, usuarioEditado);
-        logger.info("fin modificarUsuario");
+    @PatchMapping(value = "/usuarios/{id}/{newNombre}", produces = "application/json")
+    public ResponseEntity<Usuario> editaNombre(@PathVariable int id, @PathVariable String newNombre) {
+        logger.info("inicio editaNombre");
+        Usuario usuario = usuarioService.modifyNombre(id, newNombre);
+        logger.info("fin editaNombre");
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
