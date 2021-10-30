@@ -36,6 +36,11 @@ public class Usuario {
     @Column
     private String email;
 
+    @Schema(description = "Password del usuario", example = "1234qwer", required = true)
+    @NotBlank
+    @Column
+    private String password;
+
     @Schema(description = "Estilo de ropa favorito", example = "Casual")
     @Column(name = "estilo_favorito")
     private String estiloFavorito;
