@@ -11,6 +11,8 @@ import java.util.Set;
 public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
 
     Set<Usuario> findAll();
+    Usuario findByName(String name);
     Optional<Usuario> findByEmailAndPassword(String email, String password);
+    boolean existsByNombre(String nombre);
     boolean existsByEmail(String email);
 }
