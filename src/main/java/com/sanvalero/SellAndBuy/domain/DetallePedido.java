@@ -26,7 +26,7 @@ public class DetallePedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle_pedido")
-    private long id;
+    private int id;
 
     @Schema(description = "Detalle de la línea", example = "Pantalón vaquero", required = true)
     @NotBlank

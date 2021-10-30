@@ -27,7 +27,7 @@ public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto")
-    private long id;
+    private int id;
 
     @Schema(description = "Nombre del producto", example = "Vaqueros azules", required = true)
     @NotBlank

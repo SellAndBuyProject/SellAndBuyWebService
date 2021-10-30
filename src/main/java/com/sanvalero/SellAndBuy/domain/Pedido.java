@@ -28,7 +28,7 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_pedido")
-    private long id;
+    private int id;
 
     @Schema(description = "Precio total del pedido", example = "58.95", required = true)
     @NotBlank
