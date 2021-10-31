@@ -1,6 +1,7 @@
 package com.sanvalero.SellAndBuy.service;
 
 import com.sanvalero.SellAndBuy.domain.Producto;
+import com.sanvalero.SellAndBuy.domain.Usuario;
 import com.sanvalero.SellAndBuy.domain.Wishlist;
 import com.sanvalero.SellAndBuy.repository.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,14 @@ public class WishlistServiceImpl implements WishlistService {
 
     /**
      * Servicio que permite al usuario añadir un producto
-     * @param idUsuario identificador del usuario
+     * @param usuario objeto usuario
      * @param producto objeto producto
      * @return wishlist actualizada
      */
     @Override
-    public Wishlist addProducto(int idUsuario, Producto producto) {
-        Wishlist wishlist = wishlistRepository.findByUsuarioId(idUsuario);
+    public Wishlist addProducto(Usuario usuario, Producto producto) {
+        Wishlist wishlist = new Wishlist();
+        wishlist.setUsuario(usuario);
         wishlist.addProducto(producto);
 
         return wishlistRepository.save(wishlist);
