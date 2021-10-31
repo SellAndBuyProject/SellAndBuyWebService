@@ -58,12 +58,11 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
     private List<Pedido> pedidos;
 
-    @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1", required = true)
-    @ManyToOne
-    @JoinColumn(name = "id_historial")
+    @Schema(description = "Historial del usuario en cuestión")
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Historial historial;
 
-    @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1", required = true)
+    @Schema(description = "Wishlist del usuario en cuestión")
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Wishlist wishlist;
 }

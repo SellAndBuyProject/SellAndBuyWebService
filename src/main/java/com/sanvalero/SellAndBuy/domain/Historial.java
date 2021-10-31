@@ -23,16 +23,14 @@ import java.util.List;
 public class Historial {
 
     @Schema(description = "Identificador del historial", example = "1", required = true)
-    @NotBlank
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_historial")
     private int id;
 
     @Schema(description = "Indica el identificador del usuario que ha visto el producto", example = "1", required = true)
-    @NotBlank
     @OneToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario", updatable = false, nullable = false)
     private Usuario usuario;
 
     @Schema(description = "Productos del historial", example = "Pantalón vaquero", required = true)
