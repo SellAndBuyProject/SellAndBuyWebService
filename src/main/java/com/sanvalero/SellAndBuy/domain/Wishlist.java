@@ -35,8 +35,15 @@ public class Wishlist {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @Schema(description = "Productos de la wishlist", example = "Pantalón vaquero", required = true)
-    @NotBlank
-    @JsonBackReference
+    @Schema(description = "Productos de la wishlist", example = "Pantalón vaquero")
+    @ManyToMany
+    @JoinTable(name = "wishlists_Producto",
+            joinColumns = @JoinColumn(name = "wishlist_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "producto_id", referencedColumnName = "id"))
     private List<Producto> productos;
+
+    public void addProducto(Producto producto) {
+        productos.add(producto);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.sanvalero.SellAndBuy.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @version Curso 2020-2021
@@ -74,4 +76,9 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+
+    @Schema(description = "Wishlists en las que se encuentra el producto", example = "Wishlist del usuario con id=1", required = true)
+    @ManyToMany(mappedBy = "productos")
+    @JsonBackReference (value="get-wishlist")
+    private List<Wishlist> wishlists;
 }
