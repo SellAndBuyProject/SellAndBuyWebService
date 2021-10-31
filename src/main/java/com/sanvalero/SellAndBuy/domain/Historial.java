@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -28,13 +27,12 @@ public class Historial {
     @Column(name = "id_historial")
     private int id;
 
-    @Schema(description = "Indica el identificador del usuario que ha visto el producto", example = "1", required = true)
+    @Schema(description = "Indica el identificador del usuario que ha visto el producto", example = "1")
     @OneToOne
     @JoinColumn(name = "id_usuario", updatable = false, nullable = false)
     private Usuario usuario;
 
-    @Schema(description = "Productos del historial", example = "Pantalón vaquero", required = true)
-    @NotBlank
+    @Schema(description = "Productos del historial", example = "Pantalón vaquero")
     @JsonBackReference
     private List<Producto> productos;
 }

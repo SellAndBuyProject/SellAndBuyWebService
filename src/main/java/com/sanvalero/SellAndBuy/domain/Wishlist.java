@@ -28,7 +28,7 @@ public class Wishlist {
     @Column(name = "id_wishlist")
     private int id;
 
-    @Schema(description = "Indica el identificador del usuario que añade el producto a su lista de deseos", example = "1", required = true)
+    @Schema(description = "Indica el identificador del usuario que añade el producto a su lista de deseos", example = "1")
     @OneToOne
     @JoinColumn(name = "id_usuario", updatable = false, nullable = false)
     private Usuario usuario;

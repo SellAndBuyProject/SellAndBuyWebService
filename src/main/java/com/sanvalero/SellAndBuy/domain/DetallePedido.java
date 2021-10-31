@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 /**
  * @version Curso 2020-2021
@@ -22,19 +21,16 @@ import javax.validation.constraints.NotBlank;
 public class DetallePedido {
 
     @Schema(description = "Identificador del detalle", example = "1", required = true)
-    @NotBlank
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle_pedido")
     private int id;
 
-    @Schema(description = "Detalle de la línea", example = "Pantalón vaquero", required = true)
-    @NotBlank
+    @Schema(description = "Detalle de la línea", example = "Pantalón vaquero")
     @Column
     private String detalle;
 
-    @Schema(description = "Precio de los artículos de la línea", example = "12.75", required = true)
-    @NotBlank
+    @Schema(description = "Precio de los artículos de la línea", example = "12.75")
     @Column
     private float subtotal;
 
@@ -44,8 +40,7 @@ public class DetallePedido {
     @JsonBackReference
     private Pedido pedido;
 
-    @Schema(description = "Identificador del producto de la línea", example = "1", required = true)
-    @NotBlank
+    @Schema(description = "Identificador del producto de la línea", example = "1")
     @ManyToOne
     @JoinColumn(name = "id_producto")
     private Producto producto;
