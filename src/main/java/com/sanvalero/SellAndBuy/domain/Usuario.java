@@ -32,7 +32,8 @@ public class Usuario {
     @Column
     private String nombre;
 
-    @Schema(description = "Email del usuario", example = "user@gmail.com")
+    @Schema(description = "Email del usuario", example = "user@gmail.com", required = true)
+    @NotBlank
     @Column
     private String email;
 
