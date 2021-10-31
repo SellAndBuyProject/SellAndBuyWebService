@@ -64,7 +64,6 @@ public class Usuario {
     private Historial historial;
 
     @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1", required = true)
-    @ManyToOne
-    @JoinColumn(name = "id_wishlist")
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Wishlist wishlist;
 }

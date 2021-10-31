@@ -1,6 +1,7 @@
 package com.sanvalero.SellAndBuy.controller;
 
 import com.sanvalero.SellAndBuy.domain.Producto;
+import com.sanvalero.SellAndBuy.domain.Usuario;
 import com.sanvalero.SellAndBuy.domain.Wishlist;
 import com.sanvalero.SellAndBuy.response.Response;
 import com.sanvalero.SellAndBuy.service.WishlistService;
@@ -48,9 +49,9 @@ public class WishlistController {
             @ApiResponse(responseCode = "201", description = "Producto añadido", content = @Content(schema = @Schema(implementation = Wishlist.class)))
     })
     @PostMapping(value = "/wishlist/{id}/productos", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Wishlist> addProducto(@PathVariable int idUsuario, @RequestBody Producto producto) {
+    public ResponseEntity<Wishlist> addProducto(@RequestBody Usuario usuario, @RequestBody Producto producto) {
         logger.info("inicio addProducto");
-        Wishlist wishlist = wishlistService.addProducto(idUsuario, producto);
+        Wishlist wishlist = wishlistService.addProducto(usuario, producto);
         logger.info("fin addProducto");
         return new ResponseEntity<>(wishlist, HttpStatus.CREATED);
     }
