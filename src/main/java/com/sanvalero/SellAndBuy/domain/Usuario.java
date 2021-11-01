@@ -65,4 +65,8 @@ public class Usuario {
     @Schema(description = "Wishlist del usuario en cuestión")
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Wishlist wishlist;
+
+    @Schema(description = "Lista de productos que ha subido un usuario")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Producto> productos;
 }

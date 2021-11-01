@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.sanvalero.SellAndBuy.response.Response.NOT_FOUND;
@@ -45,6 +46,26 @@ public class ProductoController {
     public ResponseEntity<Producto> getProducto(@PathVariable int id) {
         Producto producto = productoService.findById(id);
         return new ResponseEntity<>(producto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Devuelve una lista de productos de una categoria determinada.")
+    @ApiResponses(value =
+            @ApiResponse(responseCode = "200", description = "Llista de productos.", content = @Content(schema = @Schema(implementation = Producto.class)))
+    )
+    @GetMapping(value = "/productos/{categoria}", produces = "application/json")
+    public ResponseEntity<List<Producto>> getProductosByCategoria(@PathVariable String categoria) {
+        List<Producto> productos = productoService.findByCategoria(categoria);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Devuelve una lista de productos con un nombre determinado.")
+    @ApiResponses(value =
+    @ApiResponse(responseCode = "200", description = "Llista de productos.", content = @Content(schema = @Schema(implementation = Producto.class)))
+    )
+    @GetMapping(value = "/productos/{nombre}", produces = "application/json")
+    public ResponseEntity<List<Producto>> getProductosByNombre(@PathVariable String nombre) {
+        List<Producto> productos = productoService.findByNombre(nombre);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
     @Operation(summary = "Registra un nuevo producto.")

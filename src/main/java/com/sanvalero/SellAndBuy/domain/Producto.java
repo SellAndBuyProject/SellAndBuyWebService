@@ -70,11 +70,20 @@ public class Producto {
 
     @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1")
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "FK_USUARIO", nullable = false, updatable = false)
     private Usuario usuario;
+
+    @JoinTable(
+            name = "producto_historial",
+            joinColumns = @JoinColumn(name = "FK_PRODUCTO", nullable = false),
+            inverseJoinColumns = @JoinColumn(name="FK_HISTORIAL", nullable = false)
+    )
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Historial> historialList;
 
     @Schema(description = "Wishlists en las que se encuentra el producto")
     @ManyToMany(mappedBy = "productos")
     @JsonBackReference (value="get-wishlist")
     private List<Wishlist> wishlists;
+
 }
