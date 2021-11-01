@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -23,16 +22,14 @@ import java.util.List;
 public class Historial {
 
     @Schema(description = "Identificador del historial", example = "1", required = true)
-    @NotBlank
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_historial")
     private int id;
 
-    @Schema(description = "Indica el identificador del usuario que ha visto el producto", example = "1", required = true)
-    @NotBlank
+    @Schema(description = "Indica el identificador del usuario que ha visto el producto", example = "1")
     @OneToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario", updatable = false, nullable = false)
     private Usuario usuario;
 
     @ManyToMany(mappedBy = "historialList")

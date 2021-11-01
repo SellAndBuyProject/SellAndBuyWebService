@@ -33,7 +33,7 @@ public class UsuarioController {
     private final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     @Autowired
-    UsuarioService usuarioService;
+    private UsuarioService usuarioService;
 
     @Operation(summary = "Devuelve las lista completa de los usuarios.")
     @ApiResponses(value = {

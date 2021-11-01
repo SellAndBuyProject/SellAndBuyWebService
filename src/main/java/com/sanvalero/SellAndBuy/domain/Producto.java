@@ -1,5 +1,6 @@
 package com.sanvalero.SellAndBuy.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,6 @@ import java.util.List;
 public class Producto {
 
     @Schema(description = "Identificador del producto", example = "1", required = true)
-    @NotBlank
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto")
@@ -40,8 +40,7 @@ public class Producto {
     @Column
     private String descripcion;
 
-    @Schema(description = "URL de la imagen del producto", example = "www.sellandbuy.com/foto.jpg", required = true)
-    @NotBlank
+    @Schema(description = "URL de la imagen del producto", example = "www.sellandbuy.com/foto.jpg")
     @Column
     private String imagen;
 
@@ -65,13 +64,11 @@ public class Producto {
     @Column
     private boolean nuevo;
 
-    @Schema(description = "Fecha en la que se sube el producto", example = "2021-04-01", required = true)
-    @NotBlank
+    @Schema(description = "Fecha en la que se sube el producto", example = "2021-04-01")
     @Column
     private LocalDate fechaSubida;
 
-    @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1", required = true)
-    @NotBlank
+    @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1")
     @ManyToOne
     @JoinColumn(name = "FK_USUARIO", nullable = false, updatable = false)
     private Usuario usuario;
@@ -84,5 +81,9 @@ public class Producto {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Historial> historialList;
 
+    @Schema(description = "Wishlists en las que se encuentra el producto")
+    @ManyToMany(mappedBy = "productos")
+    @JsonBackReference (value="get-wishlist")
+    private List<Wishlist> wishlists;
 
 }

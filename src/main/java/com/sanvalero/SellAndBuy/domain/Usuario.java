@@ -32,7 +32,8 @@ public class Usuario {
     @Column
     private String nombre;
 
-    @Schema(description = "Email del usuario", example = "user@gmail.com")
+    @Schema(description = "Email del usuario", example = "user@gmail.com", required = true)
+    @NotBlank
     @Column
     private String email;
 
@@ -57,14 +58,12 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
     private List<Pedido> pedidos;
 
-    @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1", required = true)
-    @ManyToOne
-    @JoinColumn(name = "id_historial")
+    @Schema(description = "Historial del usuario en cuestión")
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Historial historial;
 
-    @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1", required = true)
-    @ManyToOne
-    @JoinColumn(name = "id_wishlist")
+    @Schema(description = "Wishlist del usuario en cuestión")
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Wishlist wishlist;
 
     @Schema(description = "Lista de productos que ha subido un usuario")
