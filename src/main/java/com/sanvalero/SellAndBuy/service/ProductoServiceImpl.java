@@ -6,7 +6,9 @@ import com.sanvalero.SellAndBuy.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductoServiceImpl implements ProductoService{
@@ -32,6 +34,28 @@ public class ProductoServiceImpl implements ProductoService{
     public Producto findById(int id) {
         return productoRepository.findById(id).
                 orElseThrow(() -> new ProductoNotFoundException(id));
+    }
+
+    /**
+     * Servicio que devuelve la lista de objetos de tipo Producto de una categoria determinada.
+     * @param categoria categoria de los productos que se quieren buscar.
+     * @return lista de objetos de tipo Producto.
+     */
+    public List<Producto> findByCategoria(String categoria) {
+        return productoRepository.findAll().stream()
+                .filter(producto -> producto.getCategoria().equalsIgnoreCase(categoria))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Servicio que devuelve la lista de objetos de tipo Producto con un nombre determinado.
+     * @param nombre nombre de los productos que se quieren buscar.
+     * @return lista de objetos de tipo Producto.
+     */
+    public List<Producto> findByNombre(String nombre) {
+        return productoRepository.findAll().stream()
+                .filter(producto -> producto.getNombre().equalsIgnoreCase(nombre))
+                .collect(Collectors.toList());
     }
 
     /**

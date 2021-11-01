@@ -35,8 +35,6 @@ public class Historial {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @Schema(description = "Productos del historial", example = "Pantalón vaquero", required = true)
-    @NotBlank
-    @JsonBackReference
+    @ManyToMany(mappedBy = "historialList")
     private List<Producto> productos;
 }

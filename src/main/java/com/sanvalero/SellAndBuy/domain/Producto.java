@@ -10,6 +10,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @version Curso 2020-2021
@@ -72,6 +73,16 @@ public class Producto {
     @Schema(description = "Indica el identificador del usuario que sube el producto", example = "1", required = true)
     @NotBlank
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "FK_USUARIO", nullable = false, updatable = false)
     private Usuario usuario;
+
+    @JoinTable(
+            name = "producto_historial",
+            joinColumns = @JoinColumn(name = "FK_PRODUCTO", nullable = false),
+            inverseJoinColumns = @JoinColumn(name="FK_HISTORIAL", nullable = false)
+    )
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Historial> historialList;
+
+
 }

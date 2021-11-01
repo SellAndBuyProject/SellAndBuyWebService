@@ -66,4 +66,8 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "id_wishlist")
     private Wishlist wishlist;
+
+    @Schema(description = "Lista de productos que ha subido un usuario")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Producto> productos;
 }
