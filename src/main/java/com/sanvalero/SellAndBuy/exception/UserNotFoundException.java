@@ -2,17 +2,17 @@ package com.sanvalero.SellAndBuy.exception;
 
 import com.sanvalero.SellAndBuy.util.ConstantUtil;
 
-public class UsuarioNotFoundException extends RuntimeException {
+public class UserNotFoundException extends RuntimeException {
 
-    public UsuarioNotFoundException() {
+    public UserNotFoundException() {
         super(ConstantUtil.USUARIO_NOT_FOUND);
     }
 
-    public UsuarioNotFoundException(String message) {
+    public UserNotFoundException(String message) {
         super(message);
     }
 
-    public UsuarioNotFoundException(int id) {
+    public UserNotFoundException(long id) {
         super(ConstantUtil.USUARIO_NOT_FOUND + id);
     }
 }
