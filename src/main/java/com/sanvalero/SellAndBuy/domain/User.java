@@ -58,7 +58,7 @@ public class User {
     private List<Order> orders;
 
     @Schema(description = "Products for sale")
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "userSeller", cascade = CascadeType.REMOVE)
     private List<Product> products;
 
     @Schema(description = "Wishlist of this user")
