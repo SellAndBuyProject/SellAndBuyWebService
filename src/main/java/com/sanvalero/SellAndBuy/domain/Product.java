@@ -62,7 +62,7 @@ public class Product {
     @Schema(description = "Indicates if the product is new", example = "true", required = true)
     @NotBlank
     @Column
-    private boolean newProduct;
+    private boolean isNew;
 
     @Schema(description = "Date the product is uploaded", example = "2022-01-01")
     @Column
@@ -73,12 +73,6 @@ public class Product {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User userSeller;
-
-    @Schema(description = "User who buys the product")
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonBackReference
-    private User buyerUser;
 
     @Schema(description = "Users who have the product in their wishlist and are therefore potential users (they will probably buy it)")
     @ManyToMany(mappedBy = "wishlist")

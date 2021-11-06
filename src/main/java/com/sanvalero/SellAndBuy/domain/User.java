@@ -64,15 +64,15 @@ public class User {
     @Schema(description = "Wishlist of this user")
     @ManyToMany
     @JoinTable(name = "wishlist",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> wishlist;
 
     @Schema(description = "History of this user")
     @ManyToMany
     @JoinTable(name = "history",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> history;
 
     public User() {
