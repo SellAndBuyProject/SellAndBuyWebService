@@ -2,17 +2,17 @@ package com.sanvalero.SellAndBuy.exception;
 
 import com.sanvalero.SellAndBuy.util.ConstantUtil;
 
-public class PedidoNotSuccess extends RuntimeException{
+public class OrderNotSuccess extends RuntimeException{
 
-    public PedidoNotSuccess() {
+    public OrderNotSuccess() {
         super(ConstantUtil.PEDIDO_NOT_SUCCESS);
     }
 
-    public PedidoNotSuccess(String mensaje) {
+    public OrderNotSuccess(String mensaje) {
         super(mensaje);
     }
 
-    public PedidoNotSuccess(int id) {
+    public OrderNotSuccess(long id) {
         super("" + id);
     }
 

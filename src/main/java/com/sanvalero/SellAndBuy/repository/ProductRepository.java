@@ -1,14 +1,15 @@
 package com.sanvalero.SellAndBuy.repository;
 
-import com.sanvalero.SellAndBuy.domain.Pedido;
+import com.sanvalero.SellAndBuy.domain.Product;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
 @Repository
-public interface PedidoRepository extends CrudRepository<Pedido, Integer> {
+public interface ProductRepository extends CrudRepository<Product, Long> {
 
-    Set<Pedido> findAll();
+    Set<Product> findAll();
+
 
 }

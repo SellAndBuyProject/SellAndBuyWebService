@@ -2,17 +2,17 @@ package com.sanvalero.SellAndBuy.exception;
 
 import com.sanvalero.SellAndBuy.util.ConstantUtil;
 
-public class ProductoNotFoundException extends RuntimeException{
+public class ProductNotFoundException extends RuntimeException{
 
-    public ProductoNotFoundException() {
+    public ProductNotFoundException() {
         super();
     }
 
-    public ProductoNotFoundException(String message) {
+    public ProductNotFoundException(String message) {
         super(message);
     }
 
-    public ProductoNotFoundException(int id) {
+    public ProductNotFoundException(long id) {
         super(ConstantUtil.PRODUCTO_NOT_FOUND + id);
     }
 
