@@ -12,7 +12,7 @@ public class UserDuplicateException extends RuntimeException  {
         super();
     }
 
-    public UserDuplicateException(String email) {
-        super(ConstantUtil.USUARIO_DUPLICATE_EXCEPTION + email);
+    public UserDuplicateException(String nameOrEmail) {
+        super(ConstantUtil.USER_DUPLICATE_EXCEPTION + nameOrEmail);
     }
 }

@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class UserDTO {
+public class ProductDTO {
 
+    private long idProduct;
     private String name;
-    private String email;
-    private String password;
-    private String newPassword;
-    private String favStyle;
-    private String favColor;
-    private String size;
+    private String description;
+    private float price;
+    private String category;
+    private int size;
+    private boolean isNew;
 }

@@ -3,14 +3,13 @@ package com.sanvalero.SellAndBuy.controller;
 import com.sanvalero.SellAndBuy.domain.Order;
 import com.sanvalero.SellAndBuy.domain.Product;
 import com.sanvalero.SellAndBuy.domain.User;
+import com.sanvalero.SellAndBuy.domain.dto.ProductDTO;
 import com.sanvalero.SellAndBuy.domain.dto.UserDTO;
-import com.sanvalero.SellAndBuy.exception.UnauthorizedException;
-import com.sanvalero.SellAndBuy.exception.UserDuplicateException;
-import com.sanvalero.SellAndBuy.exception.UserMissingDataException;
-import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
+import com.sanvalero.SellAndBuy.exception.*;
 import com.sanvalero.SellAndBuy.response.Response;
 import com.sanvalero.SellAndBuy.service.OrderService;
 import com.sanvalero.SellAndBuy.service.UserService;
+import com.sanvalero.SellAndBuy.util.ConstantUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,7 +32,7 @@ import static com.sanvalero.SellAndBuy.response.Response.*;
 import static org.ietf.jgss.GSSException.UNAUTHORIZED;
 
 @RestController
-@Tag(name = "Usuarios", description = "Gestión de los usuarios")
+@Tag(name = "Users", description = "User management")
 public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -75,9 +74,9 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/users/{id}/history", produces = "application/json")
-    public ResponseEntity<List<Product>> getUserHistory(@PathVariable long userId) {
+    public ResponseEntity<List<Product>> getUserHistory(@PathVariable long id) {
         logger.info("Start getUserHistory");
-        List<Product> history = userService.findHistory(userId);
+        List<Product> history = userService.findHistory(id);
         logger.info("End getUserHistory");
         return new ResponseEntity<>(history, HttpStatus.OK);
     }
@@ -86,22 +85,22 @@ public class UserController {
     @ApiResponses(value =
     @ApiResponse(responseCode = "200", description = "Order found", content = @Content(schema = @Schema(implementation = Order.class)))
     )
-    @GetMapping(value = "/user/{id}/order", produces = "application/json")
-    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable long userId) {
-        List<Order> orders = orderService.findAllByUser(userId);
+    @GetMapping(value = "/users/{id}/order", produces = "application/json")
+    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable long id) {
+        List<Order> orders = orderService.findAllByUser(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @Operation(summary = "Register a new user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User registered", content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "406", description = "There is already a user with this email", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "406", description = "There is already a user with this name or email", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "400", description = "Required fields have not been completed", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PostMapping(value = "/users", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<User> addUser(@RequestBody User newUser) {
+    public ResponseEntity<User> addUser(@RequestBody UserDTO userDTO) {
         logger.info("Start addUser");
-        User user = userService.addUser(newUser);
+        User user = userService.addUser(userDTO);
         logger.info("fin addUser");
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
@@ -109,12 +108,14 @@ public class UserController {
     @Operation(summary = "Add a product to the wishlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product successfully added to the wishlist", content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "406", description = "The product is already added to the wishlist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PostMapping(value = "/users/{id}/wishlist/product/{id}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<User> addProductToWishlist(@PathVariable long userId, @PathVariable long productId) {
+    @PostMapping(value = "/users/{userId}/wishlist", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<User> addProductToWishlist(@PathVariable long userId, @RequestBody ProductDTO productDTO) {
         logger.info("Start addProductToWishlist");
-        User user = userService.addProductToWishlist(userId, productId);
+        User user = userService.addProductToWishlist(userId, productDTO.getIdProduct());
         logger.info("End addProductToWishlist");
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
@@ -124,12 +125,12 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "The product has been successfully registered in the history", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PostMapping(value = "/users/{id}/history/product/{id}", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Product> addProductToHistory(@PathVariable long userId, @PathVariable long productId) {
+    @PostMapping(value = "/users/{userId}/history", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<User> addProductToHistory(@PathVariable long userId, @RequestBody ProductDTO productDTO) {
         logger.info("Start addProductToHistory");
-        Product product = userService.addProductToHistory(userId, productId);
+        User user = userService.addProductToHistory(userId, productDTO.getIdProduct());
         logger.info("End addProductToHistory");
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Make a username change identified by your id")
@@ -138,9 +139,9 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PatchMapping(value = "/users/{id}/change-name", produces = "application/json")
-    public ResponseEntity<User> changeName(@PathVariable long id, @RequestParam(value = "name", defaultValue = "") String newName) {
+    public ResponseEntity<User> changeName(@PathVariable long id, @RequestBody UserDTO userDTO) {
         logger.info("Start changeName");
-        User user = userService.changeName(id, newName);
+        User user = userService.changeName(id, userDTO.getName());
         logger.info("End changeName");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -152,9 +153,9 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "The identification is incorrect", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PatchMapping(value = "/users/{id}/change-password", produces = "application/json")
-    public ResponseEntity<User> changePassword(@PathVariable long id, @RequestBody UserDTO oldUserDTO, @RequestBody UserDTO newUserDTO) {
+    public ResponseEntity<User> changePassword(@PathVariable long id, @RequestBody UserDTO userDTO) {
         logger.info("Start changePassword");
-        User user = userService.changePass(id, oldUserDTO.getPassword(), newUserDTO.getPassword());
+        User user = userService.changePass(id, userDTO.getPassword(), userDTO.getNewPassword());
         logger.info("End changePassword");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -176,12 +177,13 @@ public class UserController {
     @Operation(summary = "Remove a product from the user's wishlist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product deleted from wishlist", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @DeleteMapping(value = "/users/{id}/wishlist/product/{id}", produces = "application/json")
-    public ResponseEntity<Response> deleteProductFromWishlist(@PathVariable long idUser, @RequestBody long idProduct) {
+    @DeleteMapping(value = "/users/{userId}/wishlist/product/{productId}", produces = "application/json")
+    public ResponseEntity<Response> deleteProductFromWishlist(@PathVariable long userId, @PathVariable long productId) {
         logger.info("Start deleteProductFromWishlist");
-        userService.deleteProductFromWishlist(idUser, idProduct);
+        userService.deleteProductFromWishlist(userId, productId);
         logger.info("End deleteProductFromWishlist");
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
@@ -195,12 +197,29 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Response> handleException(ProductNotFoundException pnfe) {
+        Response response = Response.errorResponse(NOT_FOUND, pnfe.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UserDuplicateException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<Response> handleException(UserDuplicateException ude) {
         Response response = Response.errorResponse(NOT_ACCEPTABLE, ude.getMessage());
         logger.error(ude.getMessage(), ude);
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(ProductDuplicateException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ResponseEntity<Response> handleException(ProductDuplicateException pde) {
+        Response response = Response.errorResponse(NOT_ACCEPTABLE, pde.getMessage());
+        logger.error(pde.getMessage(), pde);
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
@@ -220,6 +239,15 @@ public class UserController {
         Response response = Response.errorResponse(UNAUTHORIZED, ue.getMessage());
         logger.error(ue.getMessage(), ue);
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Response> handleException(Exception exception) {
+        Response response = Response.errorResponse(500, ConstantUtil.INTERNAL_SERVER_ERROR + exception.getMessage());
+        logger.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

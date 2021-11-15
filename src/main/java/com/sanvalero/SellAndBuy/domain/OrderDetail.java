@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "detalle_pedido")
+@Entity(name = "order_details")
 public class OrderDetail {
 
     @Schema(description = "Detail identifier", example = "1", required = true)
