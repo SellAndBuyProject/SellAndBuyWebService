@@ -13,7 +13,7 @@ public class ProductNotFoundException extends RuntimeException{
     }
 
     public ProductNotFoundException(long id) {
-        super(ConstantUtil.PRODUCTO_NOT_FOUND + id);
+        super(ConstantUtil.PRODUCT_NOT_FOUND + id);
     }
 
 }

@@ -5,11 +5,11 @@ import com.sanvalero.SellAndBuy.util.ConstantUtil;
 public class OrderNotSuccess extends RuntimeException{
 
     public OrderNotSuccess() {
-        super(ConstantUtil.PEDIDO_NOT_SUCCESS);
+        super(ConstantUtil.ORDER_NOT_SUCCESS);
     }
 
-    public OrderNotSuccess(String mensaje) {
-        super(mensaje);
+    public OrderNotSuccess(String message) {
+        super(message);
     }
 
     public OrderNotSuccess(long id) {

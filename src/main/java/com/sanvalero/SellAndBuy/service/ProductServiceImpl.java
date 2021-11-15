@@ -1,11 +1,16 @@
 package com.sanvalero.SellAndBuy.service;
 
 import com.sanvalero.SellAndBuy.domain.Product;
+import com.sanvalero.SellAndBuy.domain.User;
+import com.sanvalero.SellAndBuy.domain.dto.ProductDTO;
 import com.sanvalero.SellAndBuy.exception.ProductNotFoundException;
+import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
 import com.sanvalero.SellAndBuy.repository.ProductRepository;
+import com.sanvalero.SellAndBuy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,6 +20,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Service that searches for all products
@@ -60,25 +68,47 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * Service that saves a new product
-     * @param product Product object that you want to save
+     * @param productDTO ProductDTO object that you want to save
      * @return Product object
      */
     @Override
-    public Product addProduct(Product product) {
-        return productRepository.save(product);
+    public Product addProduct(long userId, ProductDTO productDTO) {
+        Product newProduct = new Product();
+        newProduct.setName(productDTO.getName());
+        newProduct.setDescription(productDTO.getDescription());
+        newProduct.setPrice(productDTO.getPrice());
+        newProduct.setCategory(productDTO.getCategory());
+        newProduct.setSize(productDTO.getSize());
+        newProduct.setNew(productDTO.isNew());
+        newProduct.setRegisterDate(LocalDate.now());
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        newProduct.setUserSeller(user);
+        newProduct = productRepository.save(newProduct);
+
+        return newProduct;
     }
 
     /**
      * Service that edits a saved product identified by its id
      * @param id Id of the product you want to edit
-     * @param product edited Product object.
+     * @param productDTO edited ProductDTO object
      * @return updated Product object
      */
     @Override
-    public Product updateProduct(long id, Product product) {
-        Product saveProduct = productRepository.findById(id).
+    public Product updateProduct(long id, ProductDTO productDTO) {
+        Product product = productRepository.findById(id).
                 orElseThrow(() -> new ProductNotFoundException(id));
-        productRepository.delete(saveProduct);
+
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setCategory(productDTO.getCategory());
+        product.setSize(productDTO.getSize());
+        product.setNew(productDTO.isNew());
+
         return productRepository.save(product);
     }
 

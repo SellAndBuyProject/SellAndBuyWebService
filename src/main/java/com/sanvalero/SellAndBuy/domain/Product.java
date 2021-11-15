@@ -1,6 +1,7 @@
 package com.sanvalero.SellAndBuy.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-@Entity(name = "producto")
+@Entity(name = "product")
 public class Product {
 
     @Schema(description = "Product identifier", example = "1", required = true)
@@ -40,6 +41,7 @@ public class Product {
     private String description;
 
     @Schema(description = "URL with a image of that product", example = "www.sellandbuy.com/foto.jpg")
+    @Lob
     @Column
     private String image;
 
@@ -65,7 +67,7 @@ public class Product {
     private boolean isNew;
 
     @Schema(description = "Date the product is uploaded", example = "2022-01-01")
-    @Column
+    @Column(name = "register_date")
     private LocalDate registerDate;
 
     @Schema(description = "User who sells the product")
@@ -75,12 +77,12 @@ public class Product {
     private User userSeller;
 
     @Schema(description = "Users who have the product in their wishlist and are therefore potential users (they will probably buy it)")
-    @ManyToMany(mappedBy = "wishlist")
+    @ManyToMany(mappedBy = "wishlist", cascade = CascadeType.REMOVE)
     @JsonBackReference
     private List<User> potentialUsers;
 
     @Schema(description = "User who has visited this product")
-    @ManyToMany(mappedBy = "history")
+    @ManyToMany(mappedBy = "history", cascade = CascadeType.REMOVE)
     @JsonBackReference
     private List<User> visitingUsers;
 

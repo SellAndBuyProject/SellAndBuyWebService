@@ -13,7 +13,7 @@ public class OrderNotFoundException extends RuntimeException{
     }
 
     public OrderNotFoundException(long userId) {
-        super(ConstantUtil.PEDIDO_BY_USER_NOT_FOUND + " " + userId);
+        super(ConstantUtil.ORDER_BY_USER_NOT_FOUND + " " + userId);
     }
 
 }

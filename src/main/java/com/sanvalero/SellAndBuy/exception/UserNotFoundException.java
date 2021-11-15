@@ -5,7 +5,7 @@ import com.sanvalero.SellAndBuy.util.ConstantUtil;
 public class UserNotFoundException extends RuntimeException {
 
     public UserNotFoundException() {
-        super(ConstantUtil.USUARIO_NOT_FOUND);
+        super(ConstantUtil.USER_NOT_FOUND);
     }
 
     public UserNotFoundException(String message) {
@@ -13,6 +13,6 @@ public class UserNotFoundException extends RuntimeException {
     }
 
     public UserNotFoundException(long id) {
-        super(ConstantUtil.USUARIO_NOT_FOUND + id);
+        super(ConstantUtil.USER_NOT_FOUND + id);
     }
 }

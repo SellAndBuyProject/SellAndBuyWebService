@@ -2,6 +2,7 @@ package com.sanvalero.SellAndBuy.service;
 
 import com.sanvalero.SellAndBuy.domain.Product;
 import com.sanvalero.SellAndBuy.domain.User;
+import com.sanvalero.SellAndBuy.domain.dto.UserDTO;
 import com.sanvalero.SellAndBuy.exception.*;
 import com.sanvalero.SellAndBuy.repository.ProductRepository;
 import com.sanvalero.SellAndBuy.repository.UserRepository;
@@ -65,21 +66,30 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Servicie that add a user
-     * @param user User object
-     * @return new User object
+     * Service that add a user
+     * @param userDTO UserDTO object
+     * @return User object
      */
     @Override
-    public User addUser(User user) {
-        if (userRepository.existsByName(user.getName()))
-            throw new UserDuplicateException(user.getName());
+    public User addUser(UserDTO userDTO) {
+        User newUser = new User();
+        if (userRepository.existsByName(userDTO.getName()))
+            throw new UserDuplicateException("nombre: " + userDTO.getName());
 
-        if (userRepository.existsByEmail(user.getEmail()))
-            throw new UserDuplicateException(user.getEmail());
+        if (userRepository.existsByEmail(userDTO.getEmail()))
+            throw new UserDuplicateException("email: " + userDTO.getEmail());
 
-        if (user.getName().isEmpty() || user.getEmail().isEmpty() || user.getPassword().isEmpty())
+        if (userDTO.getName().isEmpty() || userDTO.getEmail().isEmpty() || userDTO.getPassword().isEmpty())
             throw new UserMissingDataException();
-        return userRepository.save(user);
+
+        newUser.setName(userDTO.getName());
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setPassword(userDTO.getPassword());
+        newUser.setFavStyle(userDTO.getFavStyle());
+        newUser.setFavColor(userDTO.getFavColor());
+        newUser.setSize(userDTO.getSize());
+
+        return userRepository.save(newUser);
     }
 
     /**
@@ -93,9 +103,18 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        Product product = productService.findById(productId);
+        Product product = productRepository.findById(productId).
+                orElseThrow(() -> new ProductNotFoundException(productId));
 
-        user.addProductToWishlist(product);
+        List<Product> wishlist = user.getWishlist();
+        // If wishlist does not contains the product & the product is not sold by this user
+        if(!wishlist.contains(product) && !user.getProducts().contains(product)) {
+            user.addProductToWishlist(product); // Add product to wishlist
+        }
+        else if (wishlist.contains(product)) {
+            throw new ProductDuplicateException(product.getId());
+        }
+
         return userRepository.save(user);
     }
 
@@ -110,8 +129,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         List<Product> wishlist = user.getWishlist();
-        Product product = productService.findById(productId);
+
+        Product product = productRepository.findById(productId).
+                orElseThrow(() -> new ProductNotFoundException(productId));
+
         wishlist.remove(product);
+        userRepository.save(user);
     }
 
     /**
@@ -121,7 +144,7 @@ public class UserServiceImpl implements UserService {
      * @return Product object
      */
     @Override
-    public Product addProductToHistory(long userId, long productId) {
+    public User addProductToHistory(long userId, long productId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -131,9 +154,12 @@ public class UserServiceImpl implements UserService {
         if(history.size() >= 10) {
             productRepository.delete(history.get(0));
         }
-        user.addProductToHistory(productConsulted);
+        // If history does not contains the product & the product is not sold by this user
+        if(!history.contains(productConsulted) && !user.getProducts().contains(productConsulted)) {
+            user.addProductToHistory(productConsulted); // Add product to history
+        }
 
-        return productConsulted;
+        return userRepository.save(user);
     }
 
     /**
@@ -166,15 +192,15 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Service that allows the user to modify his password
-     * @param userId user identifier
+     * @param id user identifier
      * @param oldPassword old password
      * @param newPassword new password
      * @return User object
      */
     @Override
-    public User changePass(long userId, String oldPassword, String newPassword) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+    public User changePass(long id, String oldPassword, String newPassword) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         if (!user.getPassword().equals(oldPassword))
             throw new UnauthorizedException();
@@ -185,13 +211,13 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Service that allows you to delete the user
-     * @param userId user identifier
+     * @param id user identifier
      * @param password user password
      */
     @Override
-    public void deleteUser(long userId, String password) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+    public void deleteUser(long id, String password) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         if (!user.getPassword().equals(password))
             throw new UnauthorizedException();

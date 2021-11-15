@@ -9,6 +9,6 @@ import com.sanvalero.SellAndBuy.util.ConstantUtil;
 public class UserMissingDataException extends RuntimeException  {
 
     public UserMissingDataException() {
-        super(ConstantUtil.USUARIO_MISSING_DATA_EXCEPTION);
+        super(ConstantUtil.USER_MISSING_DATA_EXCEPTION);
     }
 }
