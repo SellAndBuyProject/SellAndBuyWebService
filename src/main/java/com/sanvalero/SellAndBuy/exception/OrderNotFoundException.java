@@ -8,8 +8,8 @@ public class OrderNotFoundException extends RuntimeException{
         super();
     }
 
-    public OrderNotFoundException(String mensaje) {
-        super();
+    public OrderNotFoundException(String message) {
+        super(message);
     }
 
     public OrderNotFoundException(long userId) {

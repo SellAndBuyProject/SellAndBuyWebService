@@ -2,6 +2,7 @@ package com.sanvalero.SellAndBuy.controller;
 
 import com.sanvalero.SellAndBuy.domain.Product;
 import com.sanvalero.SellAndBuy.domain.dto.ProductDTO;
+import com.sanvalero.SellAndBuy.exception.NotImplementedException;
 import com.sanvalero.SellAndBuy.exception.ProductNotFoundException;
 import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
 import com.sanvalero.SellAndBuy.response.Response;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
-import static com.sanvalero.SellAndBuy.response.Response.NOT_FOUND;
+import static com.sanvalero.SellAndBuy.response.Response.*;
 
 @RestController
 @Tag(name = "Product", description = "Product management")
@@ -72,8 +73,10 @@ public class ProductController {
     }
 
     @Operation(summary = "Search products by name")
-    @ApiResponses(value =
-    @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(schema = @Schema(implementation = Product.class))))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(schema = @Schema(implementation = Product.class))),
+            @ApiResponse(responseCode = "501", description = "It has been searched by a name composed of more than two words", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
     @GetMapping(value = "/products/name", produces = "application/json")
     public ResponseEntity<List<Product>> getProductsByName(@RequestParam(name = "name", defaultValue = "") String name) {
         logger.info("Start getProductsByName");
@@ -122,7 +125,7 @@ public class ProductController {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Response> handleException(UserNotFoundException unfe) {
+    public ResponseEntity<Response> handleUserNotFoundException(UserNotFoundException unfe) {
         Response response = Response.errorResponse(NOT_FOUND, unfe.getMessage());
         logger.error(unfe.getMessage(), unfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -131,16 +134,26 @@ public class ProductController {
     @ExceptionHandler(ProductNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Response> handleException(ProductNotFoundException pnfe) {
+    public ResponseEntity<Response> handleProductNotFoundException(ProductNotFoundException pnfe) {
         Response response = Response.errorResponse(NOT_FOUND, pnfe.getMessage());
+        logger.error(pnfe.getMessage(), pnfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotImplementedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    public ResponseEntity<Response> handleNotImplementedException(NotImplementedException nie) {
+        Response response = Response.errorResponse(NOT_IMPLEMENTED, nie.getMessage());
+        logger.error(nie.getMessage(), nie);
+        return new ResponseEntity<>(response, HttpStatus.NOT_IMPLEMENTED);
     }
 
     @ExceptionHandler
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Response> handleException(Exception exception) {
-        Response response = Response.errorResponse(500, ConstantUtil.INTERNAL_SERVER_ERROR + exception.getMessage());
+        Response response = Response.errorResponse(INTERNAL_SERVER_ERROR, ConstantUtil.INTERNAL_SERVER_ERROR + exception.getMessage());
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -191,7 +191,7 @@ public class UserController {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Response> handleException(UserNotFoundException unfe) {
+    public ResponseEntity<Response> handleUserNotFoundException(UserNotFoundException unfe) {
         Response response = Response.errorResponse(NOT_FOUND, unfe.getMessage());
         logger.error(unfe.getMessage(), unfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -200,15 +200,16 @@ public class UserController {
     @ExceptionHandler(ProductNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Response> handleException(ProductNotFoundException pnfe) {
+    public ResponseEntity<Response> handleProductNotFoundException(ProductNotFoundException pnfe) {
         Response response = Response.errorResponse(NOT_FOUND, pnfe.getMessage());
+        logger.error(pnfe.getMessage(), pnfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UserDuplicateException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public ResponseEntity<Response> handleException(UserDuplicateException ude) {
+    public ResponseEntity<Response> handleUserDuplicateException(UserDuplicateException ude) {
         Response response = Response.errorResponse(NOT_ACCEPTABLE, ude.getMessage());
         logger.error(ude.getMessage(), ude);
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
@@ -217,7 +218,7 @@ public class UserController {
     @ExceptionHandler(ProductDuplicateException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public ResponseEntity<Response> handleException(ProductDuplicateException pde) {
+    public ResponseEntity<Response> handleProductDuplicateException(ProductDuplicateException pde) {
         Response response = Response.errorResponse(NOT_ACCEPTABLE, pde.getMessage());
         logger.error(pde.getMessage(), pde);
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
@@ -226,7 +227,7 @@ public class UserController {
     @ExceptionHandler(UserMissingDataException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Response> handleException(UserMissingDataException umde) {
+    public ResponseEntity<Response> handleUserMissingDataException(UserMissingDataException umde) {
         Response response = Response.errorResponse(BAD_REQUEST, umde.getMessage());
         logger.error(umde.getMessage(), umde);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -235,7 +236,7 @@ public class UserController {
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<Response> handleException(UnauthorizedException ue) {
+    public ResponseEntity<Response> handleUnauthorizedException(UnauthorizedException ue) {
         Response response = Response.errorResponse(UNAUTHORIZED, ue.getMessage());
         logger.error(ue.getMessage(), ue);
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
@@ -245,7 +246,7 @@ public class UserController {
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Response> handleException(Exception exception) {
-        Response response = Response.errorResponse(500, ConstantUtil.INTERNAL_SERVER_ERROR + exception.getMessage());
+        Response response = Response.errorResponse(INTERNAL_SERVER_ERROR, ConstantUtil.INTERNAL_SERVER_ERROR + exception.getMessage());
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
