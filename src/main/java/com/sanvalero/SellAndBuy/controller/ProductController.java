@@ -29,7 +29,7 @@ import static com.sanvalero.SellAndBuy.response.Response.NOT_FOUND;
 @Tag(name = "Product", description = "Product management")
 public class ProductController {
 
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ProductService productService;

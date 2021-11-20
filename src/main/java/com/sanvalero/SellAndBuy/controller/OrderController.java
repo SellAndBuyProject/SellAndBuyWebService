@@ -18,10 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "Order", description = "Controller de Pedidos")
+@Tag(name = "Order", description = "Order management")
 public class OrderController {
 
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     private OrderService orderService;
