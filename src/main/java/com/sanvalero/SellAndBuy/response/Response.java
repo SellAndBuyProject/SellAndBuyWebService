@@ -13,6 +13,8 @@ public class Response {
     public static final int FORBIDDEN = 102;
     public static final int BAD_REQUEST = 103;
     public static final int NOT_ACCEPTABLE = 104;
+    public static final int NOT_IMPLEMENTED = 105;
+    public static final int INTERNAL_SERVER_ERROR = 500;
 
     public static final String NO_MESSAGE = "";
 

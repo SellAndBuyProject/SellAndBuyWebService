@@ -3,6 +3,7 @@ package com.sanvalero.SellAndBuy.service;
 import com.sanvalero.SellAndBuy.domain.Product;
 import com.sanvalero.SellAndBuy.domain.User;
 import com.sanvalero.SellAndBuy.domain.dto.ProductDTO;
+import com.sanvalero.SellAndBuy.exception.NotImplementedException;
 import com.sanvalero.SellAndBuy.exception.ProductNotFoundException;
 import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
 import com.sanvalero.SellAndBuy.repository.ProductRepository;
@@ -56,11 +57,38 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Service that returns the list of Product objects with a certain name
-     * @param name name of the products you want to search for
+     * Service that returns the list of Product objects that contain a certain name,
+     * regardless of uppercase or lowercase.
+     * @param name name of the products you want to search for (Can be one or two words)
+     *             If the name has more than two words, it returns an exception
      * @return list of objects of type Product
      */
     public List<Product> findByName(String name) {
+        // If the name contains more than two words
+        if (name.split(" ").length > 2)
+            throw new NotImplementedException();
+
+        // If the name contains two words
+        if (name.split(" ").length == 2) {
+            return productRepository.findAll().stream()
+                    // Create a first stream with the products that match the first word
+                    .filter(product ->
+                            product.getName()
+                                    .toLowerCase()
+                                    // Split name into the array that will have as many objects as words contains the string
+                                    // In this case, we get the first object (the first word)
+                                    .contains(name.split(" ")[0].toLowerCase()))
+                    // Create a second stream with the products that are in the first stream and that match the second word
+                    .filter(product ->
+                            product.getName()
+                                    .toLowerCase()
+                                    // Split name into the array that will have as many objects as words contains the string
+                                    // In this case, we get the second object (the second word)
+                                    .contains(name.split(" ")[1].toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // If the name contains only one word
         return productRepository.findAll().stream()
                 .filter(product ->
                         product.getName()
