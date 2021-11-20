@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
      */
     public List<Product> findByCategory(String category) {
         return productRepository.findAll().stream()
-                .filter(producto -> producto.getCategory().equalsIgnoreCase(category))
+                .filter(product -> product.getCategory().equalsIgnoreCase(category))
                 .collect(Collectors.toList());
     }
 
@@ -62,7 +62,10 @@ public class ProductServiceImpl implements ProductService {
      */
     public List<Product> findByName(String name) {
         return productRepository.findAll().stream()
-                .filter(product -> product.getName().equalsIgnoreCase(name))
+                .filter(product ->
+                        product.getName()
+                                .toLowerCase()
+                                .contains((name).toLowerCase()))
                 .collect(Collectors.toList());
     }
 
