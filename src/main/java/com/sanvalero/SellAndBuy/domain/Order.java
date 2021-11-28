@@ -30,18 +30,22 @@ public class Order {
     @Column
     private float totalPrice;
 
+    @Schema(description = "Indicates if the order has been placed", example = "true")
+    @Column(name = "is_placed")
+    private boolean isPlaced;
+
     @Schema(description = "Date the order is placed", example = "2022-01-01")
     @Column
     private LocalDate date;
 
     @Schema(description = "Order details", example = "1 Denim shorts 12.75")
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
-    @JsonBackReference
     private List<OrderDetail> details;
 
     @Schema(description = "Identifier of the user who uploads the garment")
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     public Order() {

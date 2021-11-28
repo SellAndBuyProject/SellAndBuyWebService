@@ -1,16 +1,19 @@
 package com.sanvalero.SellAndBuy.service;
 
 import com.sanvalero.SellAndBuy.domain.Order;
-import com.sanvalero.SellAndBuy.domain.User;
+import com.sanvalero.SellAndBuy.domain.OrderDetail;
+import com.sanvalero.SellAndBuy.domain.Product;
 import com.sanvalero.SellAndBuy.exception.OrderNotFoundException;
 import com.sanvalero.SellAndBuy.exception.OrderNotSuccess;
-import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
+import com.sanvalero.SellAndBuy.repository.OrderDetailRepository;
 import com.sanvalero.SellAndBuy.repository.OrderRepository;
+import com.sanvalero.SellAndBuy.repository.ProductRepository;
 import com.sanvalero.SellAndBuy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +23,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -51,29 +60,39 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * Service that allows to user place an order
-     * @param order Order object
-     * @param userId user identified
-     * @return Order object added
+     * @param orderId order identified
+     * @return Order object that has been placed
      */
     @Override
-    public Order addOrder(Order order, long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+    public Order placeOrder(long orderId) {
+        Order order = orderRepository.findById(orderId).
+                orElseThrow(() -> new OrderNotFoundException(orderId));
 
-        order.setUser(user);
+        order.setDate(LocalDate.now());
+        order = orderRepository.save(order);
+
+        for(OrderDetail detail : order.getDetails()) { // Get order details
+            Product product = detail.getProduct(); // Product of each detail line
+            product.setSold(true);
+            detail.setPrice(product.getPrice());
+
+            List<OrderDetail> details = new ArrayList<>(); // Details of the order
+            details.add(detail); // Add each detail line to details list
+            order.setDetails(details); // Set details to order
+        }
 
         // Check that the order has at least one detail
         if (order.getDetails().isEmpty())
             throw new OrderNotSuccess();
 
         // Calculate the price of products
-        final float[] precio = {0};
-        order.getDetails().forEach(detallePedido -> precio[0] += detallePedido.getPrice());
+        float[] price = {0};
+        order.getDetails().forEach(orderDetail -> price[0] += orderDetail.getPrice());
+        order.setTotalPrice(price[0]); // Total price
+        order.setPlaced(true); // The order has been placed
+        order = orderRepository.save(order);
 
-        order.setTotalPrice(precio[0]); // Total price
-        order.setDate(LocalDate.now()); // Sate
-
-        return orderRepository.save(order);
+        return order;
     }
 
 }

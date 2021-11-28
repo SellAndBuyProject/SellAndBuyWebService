@@ -25,13 +25,14 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Schema(description = "Line detail", example = "Denim shorts")
-    @Column
-    private int detail;
-
     @Schema(description = "Price of the items on the line", example = "12.75")
     @Column
     private float price;
+
+    @Schema(description = "Product identifier", example = "1")
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Schema(description = "Order identifier to which the line is added", example = "1")
     @ManyToOne
@@ -39,8 +40,4 @@ public class OrderDetail {
     @JsonBackReference
     private Order order;
 
-    @Schema(description = "Product identifier", example = "1")
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
 }
