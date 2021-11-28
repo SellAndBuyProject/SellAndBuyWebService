@@ -61,9 +61,9 @@ public class ProductController {
     }
 
     @Operation(summary = "Search products by category")
-    @ApiResponses(value =
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(schema = @Schema(implementation = Product.class)))
-    )
+    })
     @GetMapping(value = "/products/category", produces = "application/json")
     public ResponseEntity<List<Product>> getProductsByCategory(@RequestParam(name = "category", defaultValue = "") String category) {
         logger.info("Start getProductsByCategory");
@@ -86,8 +86,9 @@ public class ProductController {
     }
 
     @Operation(summary = "Add a new product")
-    @ApiResponses(value =
-    @ApiResponse(responseCode = "201", description = "Product was added", content = @Content(schema = @Schema(implementation = Product.class))))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Product was added", content = @Content(schema = @Schema(implementation = Product.class)))
+    })
     @PostMapping(value = "/users/{id}/products", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Product> addProduct(@PathVariable long id, @RequestBody ProductDTO productDTO) {
         logger.info("Start addProduct");

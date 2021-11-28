@@ -51,9 +51,7 @@ public class ProductServiceImpl implements ProductService {
      * @return list of objects of type Product
      */
     public List<Product> findByCategory(String category) {
-        return productRepository.findAll().stream()
-                .filter(product -> product.getCategory().equalsIgnoreCase(category))
-                .collect(Collectors.toList());
+        return productRepository.findByCategory(category);
     }
 
     /**
@@ -107,10 +105,12 @@ public class ProductServiceImpl implements ProductService {
         Product newProduct = new Product();
         newProduct.setName(productDTO.getName());
         newProduct.setDescription(productDTO.getDescription());
+        newProduct.setImage(productDTO.getImage());
         newProduct.setPrice(productDTO.getPrice());
         newProduct.setCategory(productDTO.getCategory());
         newProduct.setSize(productDTO.getSize());
         newProduct.setNew(productDTO.isNew());
+        newProduct.setSold(false);
         newProduct.setRegisterDate(LocalDate.now());
 
         User user = userRepository.findById(userId)
@@ -149,8 +149,8 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public void deleteProduct(long id) {
-        Product saveProduct = productRepository.findById(id).
-                orElseThrow(() -> new ProductNotFoundException(id));
+        productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
         productRepository.deleteById(id);
     }
 }

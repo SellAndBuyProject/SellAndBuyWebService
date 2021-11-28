@@ -63,8 +63,12 @@ public class Product {
 
     @Schema(description = "Indicates if the product is new", example = "true", required = true)
     @NotBlank
-    @Column
+    @Column(name = "is_new")
     private boolean isNew;
+
+    @Schema(description = "Indicates if the product has been sold", example = "true")
+    @Column
+    private boolean sold;
 
     @Schema(description = "Date the product is uploaded", example = "2022-01-01")
     @Column(name = "register_date")

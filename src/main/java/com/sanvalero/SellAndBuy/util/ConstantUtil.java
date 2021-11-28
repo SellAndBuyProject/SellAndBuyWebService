@@ -9,7 +9,9 @@ public class ConstantUtil {
     public final static String USER_NOT_FOUND = "El usuario no existe";
     public final static String USER_DUPLICATE_EXCEPTION = "El usuario ya existe. Por favor, cambia el ";
     public final static String PRODUCT_DUPLICATE_EXCEPTION = "El producto ya está añadido en la wishlist";
+    public final static String PRODUCT_SOLD_EXCEPTION = "Lo sentimos, el producto ya se ha vendido ";
     public final static String USER_MISSING_DATA_EXCEPTION = "Por favor, rellena los campos requeridos";
+    public final static String ORDER_ALREADY_PLACED_EXCEPTION = "No puedes hacer ningún cambio, el pedido ya ha sido realizado. Número del pedido: ";
     public final static String UNAUTHORIZED_EXCEPTION = "No tienes permisos para realizar esta acción";
     public final static String INTERNAL_SERVER_ERROR = "Error inesperado. Por favor, contacte con el administrador. ";
     public final static String NOT_IMPLEMENTED_EXCEPTION = "Funcionalidad aún no implementada";

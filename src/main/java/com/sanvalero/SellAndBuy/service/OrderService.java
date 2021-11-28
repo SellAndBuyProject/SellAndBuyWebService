@@ -1,6 +1,7 @@
 package com.sanvalero.SellAndBuy.service;
 
 import com.sanvalero.SellAndBuy.domain.Order;
+import com.sanvalero.SellAndBuy.domain.dto.OrderDTO;
 
 import java.util.List;
 
@@ -8,6 +9,5 @@ public interface OrderService {
 
     List<Order> findAllByUser(long userId);
     Order findById(long orderId);
-    Order addOrder(Order order, long userId);
-
+    Order placeOrder(long orderId);
 }
