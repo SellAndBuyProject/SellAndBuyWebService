@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UnauthorizedException::new);
     }
 
     /**
@@ -157,6 +157,9 @@ public class UserServiceImpl implements UserService {
         // If history does not contains the product & the product is not sold by this user
         if(!history.contains(productConsulted) && !user.getProducts().contains(productConsulted)) {
             user.addProductToHistory(productConsulted); // Add product to history
+        }
+        else if(history.contains(productConsulted)){
+            throw new ProductDuplicateException(productConsulted.getId());
         }
 
         return userRepository.save(user);

@@ -3,11 +3,11 @@ package com.sanvalero.SellAndBuy.service;
 import com.sanvalero.SellAndBuy.domain.Order;
 import com.sanvalero.SellAndBuy.domain.OrderDetail;
 import com.sanvalero.SellAndBuy.domain.Product;
+import com.sanvalero.SellAndBuy.domain.User;
 import com.sanvalero.SellAndBuy.exception.OrderNotFoundException;
 import com.sanvalero.SellAndBuy.exception.OrderNotSuccess;
-import com.sanvalero.SellAndBuy.repository.OrderDetailRepository;
+import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
 import com.sanvalero.SellAndBuy.repository.OrderRepository;
-import com.sanvalero.SellAndBuy.repository.ProductRepository;
 import com.sanvalero.SellAndBuy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,12 +25,6 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     /**
@@ -40,6 +34,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<Order> findAllByUser(long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
         Set<Order> orders = orderRepository.findAll();
 
         return orders.stream()

@@ -1,7 +1,6 @@
 package com.sanvalero.SellAndBuy.service;
 
 import com.sanvalero.SellAndBuy.domain.Order;
-import com.sanvalero.SellAndBuy.domain.dto.OrderDTO;
 
 import java.util.List;
 
