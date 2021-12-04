@@ -2,7 +2,6 @@ package com.sanvalero.SellAndBuy.controller;
 
 import com.sanvalero.SellAndBuy.domain.Order;
 import com.sanvalero.SellAndBuy.domain.OrderDetail;
-import com.sanvalero.SellAndBuy.domain.dto.ProductDTO;
 import com.sanvalero.SellAndBuy.exception.*;
 import com.sanvalero.SellAndBuy.response.Response;
 import com.sanvalero.SellAndBuy.service.OrderDetailService;
@@ -20,8 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.sanvalero.SellAndBuy.response.Response.INTERNAL_SERVER_ERROR;
-import static com.sanvalero.SellAndBuy.response.Response.NOT_FOUND;
+import static com.sanvalero.SellAndBuy.response.Response.*;
 
 /**
  * @version Curso 2020-2021
@@ -41,10 +39,10 @@ public class OrderDetailController {
             @ApiResponse(responseCode = "201", description = "Product registered", content = @Content(schema = @Schema(implementation = Order.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PostMapping(value = "/users/{id}/cart/products", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<OrderDetail> addProductToCart(@PathVariable long id, @RequestBody ProductDTO productDTO) {
+    @PostMapping(value = "/users/{userId}/cart/products/{productId}", produces = "application/json")
+    public ResponseEntity<OrderDetail> addProductToCart(@PathVariable long userId, @PathVariable long productId) {
         logger.info("Start addProductToCart");
-        OrderDetail orderDetail = orderDetailService.addProductToCart(id, productDTO.getIdProduct());
+        OrderDetail orderDetail = orderDetailService.addProductToCart(userId, productId);
         logger.info("End addProductToCart");
         return new ResponseEntity<>(orderDetail, HttpStatus.CREATED);
     }
@@ -54,10 +52,10 @@ public class OrderDetailController {
             @ApiResponse(responseCode = "200", description = "Product was deleted", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @DeleteMapping(value = "/orders/{id}/products", produces = "application/json")
-    public ResponseEntity<Response> deleteProductFromCart(@PathVariable long id, @RequestBody ProductDTO productDTO) {
+    @DeleteMapping(value = "/orders/{userId}/products/{productId}", produces = "application/json")
+    public ResponseEntity<Response> deleteProductFromCart(@PathVariable long userId, @PathVariable long productId) {
         logger.info("Start deleteProductToCart");
-        orderDetailService.deleteProductFromCart(id, productDTO.getIdProduct());
+        orderDetailService.deleteProductFromCart(userId, productId);
         logger.info("End deleteProductToCart");
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
@@ -91,18 +89,18 @@ public class OrderDetailController {
 
     @ExceptionHandler(OrderAlreadyPlacedException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Response> handleOrderAlreadyPlacedException (OrderAlreadyPlacedException oaple) {
-        Response response = Response.errorResponse(NOT_FOUND, oaple.getMessage());
+        Response response = Response.errorResponse(ALREADY_PLACED, oaple.getMessage());
         logger.error(oaple.getMessage(), oaple);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ProductSoldException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Response> handleProductSoldException (ProductSoldException onfe) {
-        Response response = Response.errorResponse(NOT_FOUND, onfe.getMessage());
+        Response response = Response.errorResponse(PRODUCT_SOLD, onfe.getMessage());
         logger.error(onfe.getMessage(), onfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }

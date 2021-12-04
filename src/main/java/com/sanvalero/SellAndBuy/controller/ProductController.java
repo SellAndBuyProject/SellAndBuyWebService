@@ -75,7 +75,7 @@ public class ProductController {
     @Operation(summary = "Search products by name")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(schema = @Schema(implementation = Product.class))),
-            @ApiResponse(responseCode = "501", description = "It has been searched by a name composed of more than two words", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "200", description = "It has been searched by a name composed of more than two words", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/products/name", produces = "application/json")
     public ResponseEntity<List<Product>> getProductsByName(@RequestParam(name = "name", defaultValue = "") String name) {
@@ -143,7 +143,7 @@ public class ProductController {
 
     @ExceptionHandler(NotImplementedException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Response> handleNotImplementedException(NotImplementedException nie) {
         Response response = Response.errorResponse(NOT_IMPLEMENTED, nie.getMessage());
         logger.error(nie.getMessage(), nie);

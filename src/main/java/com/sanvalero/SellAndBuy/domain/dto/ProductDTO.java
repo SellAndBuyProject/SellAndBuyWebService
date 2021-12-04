@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductDTO {
 
-    @Schema(description = "Product identifier", example = "1")
-    private long idProduct;
-
     @Schema(description = "Product name", example = "Levi's shorts")
     private String name;
 

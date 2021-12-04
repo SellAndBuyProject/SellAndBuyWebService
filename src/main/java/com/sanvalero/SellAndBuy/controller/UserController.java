@@ -1,13 +1,10 @@
 package com.sanvalero.SellAndBuy.controller;
 
-import com.sanvalero.SellAndBuy.domain.Order;
 import com.sanvalero.SellAndBuy.domain.Product;
 import com.sanvalero.SellAndBuy.domain.User;
-import com.sanvalero.SellAndBuy.domain.dto.ProductDTO;
 import com.sanvalero.SellAndBuy.domain.dto.UserDTO;
 import com.sanvalero.SellAndBuy.exception.*;
 import com.sanvalero.SellAndBuy.response.Response;
-import com.sanvalero.SellAndBuy.service.OrderService;
 import com.sanvalero.SellAndBuy.service.UserService;
 import com.sanvalero.SellAndBuy.util.ConstantUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,9 +37,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private OrderService orderService;
-
     @Operation(summary = "Get all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User's list", content = @Content(schema = @Schema(implementation = User.class)))
@@ -55,13 +49,13 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get user by name and password")
+    @Operation(summary = "Get the object of the user who has logged in through email and password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "401", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @GetMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<User> getLoginUser(@RequestBody UserDTO userDTO) {
+    @PostMapping(value = "/login", produces = "application/json")
+    public ResponseEntity<User> loginUser(@RequestBody UserDTO userDTO) {
         logger.info("Start getLoginUser");
         User user = userService.findByEmailAndPassword(userDTO.getEmail(), userDTO.getPassword());
         logger.info("End getLoginUser");
@@ -81,20 +75,10 @@ public class UserController {
         return new ResponseEntity<>(history, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get orders by user")
-    @ApiResponses(value =
-    @ApiResponse(responseCode = "200", description = "Order found", content = @Content(schema = @Schema(implementation = Order.class)))
-    )
-    @GetMapping(value = "/users/{id}/order", produces = "application/json")
-    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable long id) {
-        List<Order> orders = orderService.findAllByUser(id);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
-    }
-
     @Operation(summary = "Register a new user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User registered", content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "406", description = "There is already a user with this name or email", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "200", description = "There is already a user with this name or email", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "400", description = "Required fields have not been completed", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PostMapping(value = "/users", produces = "application/json", consumes = "application/json")
@@ -110,12 +94,12 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "Product successfully added to the wishlist", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "406", description = "The product is already added to the wishlist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "200", description = "The product is already added to the wishlist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PostMapping(value = "/users/{userId}/wishlist", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<User> addProductToWishlist(@PathVariable long userId, @RequestBody ProductDTO productDTO) {
+    @PostMapping(value = "/users/{userId}/wishlist/product/{productId}", produces = "application/json")
+    public ResponseEntity<User> addProductToWishlist(@PathVariable long userId, @PathVariable long productId) {
         logger.info("Start addProductToWishlist");
-        User user = userService.addProductToWishlist(userId, productDTO.getIdProduct());
+        User user = userService.addProductToWishlist(userId, productId);
         logger.info("End addProductToWishlist");
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
@@ -123,12 +107,13 @@ public class UserController {
     @Operation(summary = "Add a product to the history")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "The product has been successfully registered in the history", content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "200", description = "The product is already added to the history", content = @Content(schema = @Schema(implementation = Response.class)))
     })
-    @PostMapping(value = "/users/{userId}/history", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<User> addProductToHistory(@PathVariable long userId, @RequestBody ProductDTO productDTO) {
+    @PostMapping(value = "/users/{userId}/history/product/{productId}", produces = "application/json")
+    public ResponseEntity<User> addProductToHistory(@PathVariable long userId, @PathVariable long productId) {
         logger.info("Start addProductToHistory");
-        User user = userService.addProductToHistory(userId, productDTO.getIdProduct());
+        User user = userService.addProductToHistory(userId, productId);
         logger.info("End addProductToHistory");
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
@@ -150,7 +135,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Password changed", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "403", description = "The identification is incorrect", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "401", description = "The identification is incorrect", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PatchMapping(value = "/users/{id}/change-password", produces = "application/json")
     public ResponseEntity<User> changePassword(@PathVariable long id, @RequestBody UserDTO userDTO) {
@@ -164,7 +149,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User deleted", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "403", description = "The identification is incorrect", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "401", description = "The identification is incorrect", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @DeleteMapping(value = "/users/{id}", produces = "application/json")
     public ResponseEntity<Response> deleteUser(@PathVariable long id, @RequestBody UserDTO userDTO) {
@@ -208,20 +193,20 @@ public class UserController {
 
     @ExceptionHandler(UserDuplicateException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Response> handleUserDuplicateException(UserDuplicateException ude) {
-        Response response = Response.errorResponse(NOT_ACCEPTABLE, ude.getMessage());
+        Response response = Response.errorResponse(USER_DUPLICATE, ude.getMessage());
         logger.error(ude.getMessage(), ude);
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(ProductDuplicateException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Response> handleProductDuplicateException(ProductDuplicateException pde) {
-        Response response = Response.errorResponse(NOT_ACCEPTABLE, pde.getMessage());
+        Response response = Response.errorResponse(PRODUCT_DUPLICATE, pde.getMessage());
         logger.error(pde.getMessage(), pde);
-        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler(UserMissingDataException.class)
