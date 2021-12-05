@@ -9,7 +9,7 @@ import com.sanvalero.SellAndBuy.util.ConstantUtil;
 public class ProductSoldException extends RuntimeException {
 
     public ProductSoldException() {
-        super();
+        super(ConstantUtil.PRODUCT_SOLD_EXCEPTION);
     }
 
     public ProductSoldException(String message) {

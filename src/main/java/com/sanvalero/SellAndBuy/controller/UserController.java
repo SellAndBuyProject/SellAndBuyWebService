@@ -49,6 +49,31 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @Operation(summary = "Get user by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping(value = "/users/{id}", produces = "application/json")
+    public ResponseEntity<User> getUserById(@PathVariable long id) {
+        logger.info("Start getUserById");
+        User user = userService.findById(id);
+        logger.info("End getUserById");
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search user by name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = User.class)))
+    })
+    @GetMapping(value = "/users/name", produces = "application/json")
+    public ResponseEntity<User> getUserByName(@RequestParam(name = "name", defaultValue = "") String name) {
+        logger.info("Start getUserByName");
+        User user = userService.findByName(name);
+        logger.info("End getUserByName");
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
     @Operation(summary = "Get the object of the user who has logged in through email and password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = User.class))),
@@ -108,7 +133,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "The product has been successfully registered in the history", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "200", description = "The product is already added to the history", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PostMapping(value = "/users/{userId}/history/product/{productId}", produces = "application/json")
     public ResponseEntity<User> addProductToHistory(@PathVariable long userId, @PathVariable long productId) {
@@ -197,7 +222,7 @@ public class UserController {
     public ResponseEntity<Response> handleUserDuplicateException(UserDuplicateException ude) {
         Response response = Response.errorResponse(USER_DUPLICATE, ude.getMessage());
         logger.error(ude.getMessage(), ude);
-        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler(ProductDuplicateException.class)

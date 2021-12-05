@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findById(long id) {
         return productRepository.findById(id).
-                orElseThrow(() -> new ProductNotFoundException(id));
+                orElseThrow(ProductNotFoundException::new);
     }
 
     /**
@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
         newProduct.setRegisterDate(LocalDate.now());
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+                .orElseThrow(UserNotFoundException::new);
 
         newProduct.setUserSeller(user);
         newProduct = productRepository.save(newProduct);
@@ -131,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(long id, ProductDTO productDTO) {
         Product product = productRepository.findById(id).
-                orElseThrow(() -> new ProductNotFoundException(id));
+                orElseThrow(ProductNotFoundException::new);
 
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
@@ -150,7 +150,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(long id) {
         productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+                .orElseThrow(ProductNotFoundException::new);
         productRepository.deleteById(id);
     }
 }

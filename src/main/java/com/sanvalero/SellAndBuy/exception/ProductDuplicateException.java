@@ -9,7 +9,7 @@ import com.sanvalero.SellAndBuy.util.ConstantUtil;
 public class ProductDuplicateException extends RuntimeException  {
 
     public ProductDuplicateException() {
-        super();
+        super(ConstantUtil.PRODUCT_DUPLICATE_EXCEPTION);
     }
 
     public ProductDuplicateException(long id) {

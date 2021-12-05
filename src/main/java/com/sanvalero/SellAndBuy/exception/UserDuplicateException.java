@@ -9,10 +9,6 @@ import com.sanvalero.SellAndBuy.util.ConstantUtil;
 public class UserDuplicateException extends RuntimeException  {
 
     public UserDuplicateException() {
-        super();
-    }
-
-    public UserDuplicateException(String nameOrEmail) {
-        super(ConstantUtil.USER_DUPLICATE_EXCEPTION + nameOrEmail);
+        super(ConstantUtil.USER_DUPLICATE_EXCEPTION);
     }
 }

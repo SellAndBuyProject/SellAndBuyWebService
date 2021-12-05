@@ -3,7 +3,7 @@ package com.sanvalero.SellAndBuy.service;
 import com.sanvalero.SellAndBuy.domain.Order;
 import com.sanvalero.SellAndBuy.domain.OrderDetail;
 import com.sanvalero.SellAndBuy.domain.Product;
-import com.sanvalero.SellAndBuy.domain.User;
+import com.sanvalero.SellAndBuy.exception.OrderAlreadyPlacedException;
 import com.sanvalero.SellAndBuy.exception.OrderNotFoundException;
 import com.sanvalero.SellAndBuy.exception.OrderNotSuccess;
 import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
@@ -28,23 +28,6 @@ public class OrderServiceImpl implements OrderService {
     private UserRepository userRepository;
 
     /**
-     * Service that allow to get a list of orders of a certain user
-     * @param userId user identifier from whom you want to obtain the orders
-     * @return List of objects of type Order
-     */
-    @Override
-    public List<Order> findAllByUser(long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-
-        Set<Order> orders = orderRepository.findAll();
-
-        return orders.stream()
-                .filter(order -> order.getUser().getId() == userId)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Service that allows to get a order by id
      * @param orderId order identifier
      * @return Order object
@@ -52,7 +35,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order findById(long orderId) {
         return orderRepository.findById(orderId).
-                orElseThrow(() -> new OrderNotFoundException(orderId));
+                orElseThrow(OrderNotFoundException::new);
+    }
+
+    /**
+     * Service that allow to get a list of orders of a certain user
+     * @param userId user identifier from whom you want to obtain the orders
+     * @return List of objects of type Order
+     */
+    @Override
+    public List<Order> findAllByUser(long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        Set<Order> orders = orderRepository.findAll();
+
+        return orders.stream()
+                .filter(order -> order.getUser().getId() == userId)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -63,7 +63,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeOrder(long orderId) {
         Order order = orderRepository.findById(orderId).
-                orElseThrow(() -> new OrderNotFoundException(orderId));
+                orElseThrow(OrderNotFoundException::new);
+
+        if(order.isPlaced()) {
+            throw new OrderAlreadyPlacedException(orderId);
+        }
 
         order.setDate(LocalDate.now());
         order = orderRepository.save(order);

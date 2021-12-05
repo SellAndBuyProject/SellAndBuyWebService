@@ -1,7 +1,9 @@
 package com.sanvalero.SellAndBuy.controller;
 
 import com.sanvalero.SellAndBuy.domain.Order;
+import com.sanvalero.SellAndBuy.exception.OrderAlreadyPlacedException;
 import com.sanvalero.SellAndBuy.exception.OrderNotFoundException;
+import com.sanvalero.SellAndBuy.exception.OrderNotSuccess;
 import com.sanvalero.SellAndBuy.exception.UserNotFoundException;
 import com.sanvalero.SellAndBuy.response.Response;
 import com.sanvalero.SellAndBuy.service.OrderService;
@@ -21,8 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.sanvalero.SellAndBuy.response.Response.INTERNAL_SERVER_ERROR;
-import static com.sanvalero.SellAndBuy.response.Response.NOT_FOUND;
+import static com.sanvalero.SellAndBuy.response.Response.*;
 
 @RestController
 @Tag(name = "Order", description = "Order management")
@@ -49,7 +50,7 @@ public class OrderController {
     @Operation(summary = "Get orders by user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order found", content = @Content(schema = @Schema(implementation = Order.class))),
-            @ApiResponse(responseCode = "404", description = "The order does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/users/{id}/order", produces = "application/json")
     public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable long id) {
@@ -62,7 +63,8 @@ public class OrderController {
     @Operation(summary = "Add a new order")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Order registered", content = @Content(schema = @Schema(implementation = Order.class))),
-            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "200", description = "The order has already placed", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "The order does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PostMapping(value = "/orders/{id}", produces = "application/json")
     public ResponseEntity<Order> placeOrder(@PathVariable long id) {
@@ -88,6 +90,24 @@ public class OrderController {
         Response response = Response.errorResponse(NOT_FOUND, unfe.getMessage());
         logger.error(unfe.getMessage(), unfe);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OrderAlreadyPlacedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Response> handleOrderAlreadyPlacedException (OrderAlreadyPlacedException oaple) {
+        Response response = Response.errorResponse(ALREADY_PLACED, oaple.getMessage());
+        logger.error(oaple.getMessage(), oaple);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(OrderNotSuccess.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Response> handleOrderNotSuccessException (OrderNotSuccess ons) {
+        Response response = Response.errorResponse(ORDER_NOT_SUCCESS, ons.getMessage());
+        logger.error(ons.getMessage(), ons);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler
