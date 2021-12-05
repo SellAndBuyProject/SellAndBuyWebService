@@ -20,6 +20,7 @@ public class Response {
     public static final int PRODUCT_SOLD = 203;
     public static final int ALREADY_PLACED = 204;
     public static final int ORDER_NOT_SUCCESS = 205;
+    public static final int UNAUTHORIZED = 206;
 
     public static final String NO_MESSAGE = "";
 

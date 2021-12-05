@@ -26,7 +26,6 @@ import java.util.Set;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.sanvalero.SellAndBuy.response.Response.*;
-import static org.ietf.jgss.GSSException.UNAUTHORIZED;
 
 @RestController
 @Tag(name = "Users", description = "User management")
