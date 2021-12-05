@@ -5,7 +5,7 @@ import com.sanvalero.SellAndBuy.util.ConstantUtil;
 public class OrderNotFoundException extends RuntimeException{
 
     public OrderNotFoundException() {
-        super();
+        super(ConstantUtil.ORDER_BY_USER_NOT_FOUND);
     }
 
     public OrderNotFoundException(String message) {

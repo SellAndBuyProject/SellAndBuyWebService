@@ -87,7 +87,8 @@ public class ProductController {
 
     @Operation(summary = "Add a new product")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Product was added", content = @Content(schema = @Schema(implementation = Product.class)))
+            @ApiResponse(responseCode = "201", description = "Product was added", content = @Content(schema = @Schema(implementation = Product.class))),
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PostMapping(value = "/users/{id}/products", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Product> addProduct(@PathVariable long id, @RequestBody ProductDTO productDTO) {
@@ -147,7 +148,7 @@ public class ProductController {
     public ResponseEntity<Response> handleNotImplementedException(NotImplementedException nie) {
         Response response = Response.errorResponse(NOT_IMPLEMENTED, nie.getMessage());
         logger.error(nie.getMessage(), nie);
-        return new ResponseEntity<>(response, HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler

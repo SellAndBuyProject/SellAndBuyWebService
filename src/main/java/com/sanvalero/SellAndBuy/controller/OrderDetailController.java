@@ -37,7 +37,9 @@ public class OrderDetailController {
     @Operation(summary = "Add a new order")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product registered", content = @Content(schema = @Schema(implementation = Order.class))),
-            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "200", description = "The product has been sold", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PostMapping(value = "/users/{userId}/cart/products/{productId}", produces = "application/json")
     public ResponseEntity<OrderDetail> addProductToCart(@PathVariable long userId, @PathVariable long productId) {
@@ -50,12 +52,14 @@ public class OrderDetailController {
     @Operation(summary = "Delete a product by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product was deleted", content = @Content(schema = @Schema(implementation = Response.class))),
-            @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+            @ApiResponse(responseCode = "200", description = "The order has already placed", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "The order does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
     })
-    @DeleteMapping(value = "/orders/{userId}/products/{productId}", produces = "application/json")
-    public ResponseEntity<Response> deleteProductFromCart(@PathVariable long userId, @PathVariable long productId) {
+    @DeleteMapping(value = "/orders/{orderId}/products/{productId}", produces = "application/json")
+    public ResponseEntity<Response> deleteProductFromCart(@PathVariable long orderId, @PathVariable long productId) {
         logger.info("Start deleteProductToCart");
-        orderDetailService.deleteProductFromCart(userId, productId);
+        orderDetailService.deleteProductFromCart(orderId, productId);
         logger.info("End deleteProductToCart");
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
@@ -93,7 +97,7 @@ public class OrderDetailController {
     public ResponseEntity<Response> handleOrderAlreadyPlacedException (OrderAlreadyPlacedException oaple) {
         Response response = Response.errorResponse(ALREADY_PLACED, oaple.getMessage());
         logger.error(oaple.getMessage(), oaple);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler(ProductSoldException.class)
@@ -102,7 +106,7 @@ public class OrderDetailController {
     public ResponseEntity<Response> handleProductSoldException (ProductSoldException onfe) {
         Response response = Response.errorResponse(PRODUCT_SOLD, onfe.getMessage());
         logger.error(onfe.getMessage(), onfe);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler

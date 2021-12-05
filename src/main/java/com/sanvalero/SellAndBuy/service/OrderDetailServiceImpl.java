@@ -43,13 +43,13 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public OrderDetail addProductToCart(long userId, long productId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+                .orElseThrow(UserNotFoundException::new);
 
         Product product = productRepository.findById(productId).
-                orElseThrow(() -> new ProductNotFoundException(productId));
+                orElseThrow(ProductNotFoundException::new);
 
-        if(product.isSold()) { // If the order has been sold
-            throw new ProductSoldException(productId);
+        if(product.isSold()) { // If the product has been sold
+            throw new ProductSoldException();
         }
 
         OrderDetail detail = new OrderDetail();
@@ -57,15 +57,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         detail.setProduct(product);
 
         if(user.getOrders().size() == 0) {
-            Order newOrder = new Order();
-            newOrder.setUser(user);
-            orderRepository.save(newOrder);
-            detail.setOrder(newOrder);
-            newOrder.addDetail(detail);
-            user.addOrder(newOrder);
-            orderDetailRepository.save(detail);
-            orderRepository.save(newOrder);
-
+            addNewOrder(user, detail);
             return detail;
         }
 
@@ -80,14 +72,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                 user.getOrders().addAll(orders);
 
             } else {
-                Order newOrder = new Order();
-                newOrder.setUser(user);
-                orderRepository.save(newOrder);
-                detail.setOrder(newOrder);
-                newOrder.addDetail(detail);
-                user.addOrder(newOrder);
-                orderDetailRepository.save(detail);
-                orderRepository.save(newOrder);
+                addNewOrder(user, detail);
             }
         }
 
@@ -113,7 +98,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public void deleteProductFromCart(long orderId, long productId) {
         Order order = orderRepository.findById(orderId).
-                orElseThrow(() -> new OrderNotFoundException(orderId));
+                orElseThrow(OrderNotFoundException::new);
 
         if(order.isPlaced()) {
             throw new OrderAlreadyPlacedException(orderId);
@@ -122,7 +107,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         List<OrderDetail> details = order.getDetails();
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(productId));
+                .orElseThrow(ProductNotFoundException::new);
 
         // List of details contained in the product
         List<OrderDetail> orderDetails = orderDetailRepository.findByProduct(product);
