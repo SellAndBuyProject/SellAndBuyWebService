@@ -146,6 +146,7 @@ public class UserController {
     @Operation(summary = "Make a username change identified by your id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "username changed", content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "200", description = "There is already a user with this name", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @PatchMapping(value = "/users/{id}/change-name", produces = "application/json")
