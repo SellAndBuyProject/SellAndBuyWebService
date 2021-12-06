@@ -7,6 +7,7 @@ import com.sanvalero.SellAndBuy.domain.OrderDetail;
  * @author: veronica
  */
 public interface OrderDetailService {
+
     OrderDetail addProductToCart(long userId, long productId);
     void deleteProductFromCart(long orderId, long productId);
 }

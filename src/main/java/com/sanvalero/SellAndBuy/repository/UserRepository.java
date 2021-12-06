@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * @version Curso 2020-2021
+ * @author: veronica
+ */
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 

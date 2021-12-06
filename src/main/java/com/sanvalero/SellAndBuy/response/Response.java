@@ -4,6 +4,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * @version Curso 2020-2021
+ * @author: veronica
+ */
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Response {

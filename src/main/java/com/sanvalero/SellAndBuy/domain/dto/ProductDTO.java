@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * DATA TRANSFER OBJECT
  * @version Curso 2020-2021
  * @author: veronica
  */

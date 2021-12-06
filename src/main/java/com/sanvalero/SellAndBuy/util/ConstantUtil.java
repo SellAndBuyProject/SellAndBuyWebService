@@ -1,5 +1,9 @@
 package com.sanvalero.SellAndBuy.util;
 
+/**
+ * @version Curso 2020-2021
+ * @author: veronica
+ */
 public class ConstantUtil {
 
     // Exceptions messages

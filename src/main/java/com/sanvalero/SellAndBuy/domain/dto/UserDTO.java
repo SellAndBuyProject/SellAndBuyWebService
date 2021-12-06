@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * DATA TRANSFER OBJECT
  * @version Curso 2020-2021
  * @author: veronica
  */
@@ -15,13 +16,13 @@ public class UserDTO {
     @Schema(description = "Username", example = "User")
     private String name;
 
-    @Schema(description = "Email", example = "user@gmail.com")
+    @Schema(description = "Email", example = "user@example.com")
     private String email;
 
-    @Schema(description = "Old password", example = "1234qwer")
+    @Schema(description = "Old password", example = "1234")
     private String password;
 
-    @Schema(description = "New password", example = "12345qwer")
+    @Schema(description = "New password", example = "12345")
     private String newPassword;
 
     @Schema(description = "Favorite style", example = "Casual")

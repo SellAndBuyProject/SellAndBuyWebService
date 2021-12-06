@@ -6,6 +6,10 @@ import com.sanvalero.SellAndBuy.domain.dto.ProductDTO;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @version Curso 2020-2021
+ * @author: veronica
+ */
 public interface ProductService {
 
     Set<Product> findAll();

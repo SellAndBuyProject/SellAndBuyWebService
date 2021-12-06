@@ -68,9 +68,9 @@ public class OrderController {
     })
     @PostMapping(value = "/orders/{id}", produces = "application/json")
     public ResponseEntity<Order> placeOrder(@PathVariable long id) {
-        logger.info("Start addOrder");
+        logger.info("Start placeOrder");
         Order order = orderService.placeOrder(id);
-        logger.info("End addOrder");
+        logger.info("End placeOrder");
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 

@@ -7,6 +7,10 @@ import com.sanvalero.SellAndBuy.domain.dto.UserDTO;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @version Curso 2020-2021
+ * @author: veronica
+ */
 public interface UserService {
 
     Set<User> findAll();

@@ -31,12 +31,12 @@ public class User {
     @Column
     private String name;
 
-    @Schema(description = "Email", example = "user@gmail.com", required = true)
+    @Schema(description = "Email", example = "user@example.com", required = true)
     @NotBlank
     @Column
     private String email;
 
-    @Schema(description = "Password", example = "1234qwer", required = true)
+    @Schema(description = "Password", example = "1234", required = true)
     @NotBlank
     @Column
     private String password;
@@ -45,7 +45,7 @@ public class User {
     @Column(name = "fav_style")
     private String favStyle;
 
-    @Schema(description = "Favorite color", example = "Casual")
+    @Schema(description = "Favorite color", example = "Azul")
     @Column(name = "fav_color")
     private String favColor;
 

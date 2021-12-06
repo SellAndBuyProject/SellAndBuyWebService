@@ -18,7 +18,6 @@ import java.util.List;
  * @version Curso 2020-2021
  * @author: veronica
  */
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -40,7 +39,7 @@ public class Product {
     @Column
     private String description;
 
-    @Schema(description = "URL with a image of that product", example = "www.sellandbuy.com/foto.jpg")
+    @Schema(description = "URL with a image of that product")
     @Lob
     @Column
     private String image;
@@ -51,12 +50,12 @@ public class Product {
     @Min(value = 0)
     private float price;
 
-    @Schema(description = "Product category", example = "Women's", required = true)
+    @Schema(description = "Product category", example = "Mujer", required = true)
     @NotBlank
     @Column
     private String category;
 
-    @Schema(description = "Product size", example = "36", required = true)
+    @Schema(description = "Numerical product size", example = "36", required = true)
     @NotBlank
     @Column
     private int size;

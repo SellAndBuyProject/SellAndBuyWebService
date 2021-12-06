@@ -80,9 +80,9 @@ public class UserController {
     })
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<User> loginUser(@RequestBody UserDTO userDTO) {
-        logger.info("Start getLoginUser");
+        logger.info("Start loginUser");
         User user = userService.findByEmailAndPassword(userDTO.getEmail(), userDTO.getPassword());
-        logger.info("End getLoginUser");
+        logger.info("End loginUser");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -109,7 +109,7 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody UserDTO userDTO) {
         logger.info("Start addUser");
         User user = userService.addUser(userDTO);
-        logger.info("fin addUser");
+        logger.info("End addUser");
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
