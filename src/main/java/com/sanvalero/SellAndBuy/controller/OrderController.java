@@ -9,6 +9,7 @@ import com.sanvalero.SellAndBuy.response.Response;
 import com.sanvalero.SellAndBuy.service.OrderService;
 import com.sanvalero.SellAndBuy.util.ConstantUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,8 +35,8 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Operation(summary = "Get orders by id")
-    @ApiResponses(value = {
+    @Operation(summary = "Get orders by id") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "Order found", content = @Content(schema = @Schema(implementation = Order.class))),
             @ApiResponse(responseCode = "404", description = "The order does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
@@ -47,9 +48,9 @@ public class OrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get orders by user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order found", content = @Content(schema = @Schema(implementation = Order.class))),
+    @Operation(summary = "Get orders by user") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "200", description = "Order found", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Order.class)))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/users/{id}/order", produces = "application/json")
@@ -60,9 +61,9 @@ public class OrderController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @Operation(summary = "Add a new order")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Order registered", content = @Content(schema = @Schema(implementation = Order.class))),
+    @Operation(summary = "Add a new order") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "201", description = "Processed order", content = @Content(schema = @Schema(implementation = Order.class))),
             @ApiResponse(responseCode = "200", description = "The order has already placed", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The order does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })

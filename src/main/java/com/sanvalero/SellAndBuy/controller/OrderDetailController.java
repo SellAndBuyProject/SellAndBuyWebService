@@ -34,9 +34,9 @@ public class OrderDetailController {
     @Autowired
     private OrderDetailService orderDetailService;
 
-    @Operation(summary = "Add a new order")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Product registered", content = @Content(schema = @Schema(implementation = Order.class))),
+    @Operation(summary = "Add a new order") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "201", description = "Product registered", content = @Content(schema = @Schema(implementation = OrderDetail.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "200", description = "The product has been sold", content = @Content(schema = @Schema(implementation = Response.class)))
@@ -49,8 +49,8 @@ public class OrderDetailController {
         return new ResponseEntity<>(orderDetail, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Delete a product by id")
-    @ApiResponses(value = {
+    @Operation(summary = "Delete a product by id") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "Product was deleted", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "200", description = "The order has already placed", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The order does not exist", content = @Content(schema = @Schema(implementation = Response.class))),

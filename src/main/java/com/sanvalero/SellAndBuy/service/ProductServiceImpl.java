@@ -50,6 +50,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * Service that allows you to get a user's products
+     * @param userId user identifier
+     * @return list of objects of type Product
+     */
+    @Override
+    public List<Product> findAllByUser(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        return user.getProducts();
+    }
+
+    /**
      * Service that returns the list of product-type objects of a certain category
      * @param category category of the products you want to search for
      * @return list of objects of type Product
@@ -139,7 +152,6 @@ public class ProductServiceImpl implements ProductService {
 
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
-        product.setPrice(productDTO.getPrice());
         product.setCategory(productDTO.getCategory());
         product.setSize(productDTO.getSize());
         product.setNew(productDTO.isNew());

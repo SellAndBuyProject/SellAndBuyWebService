@@ -8,6 +8,7 @@ import com.sanvalero.SellAndBuy.response.Response;
 import com.sanvalero.SellAndBuy.service.UserService;
 import com.sanvalero.SellAndBuy.util.ConstantUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,9 +37,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Operation(summary = "Get all users")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User's list", content = @Content(schema = @Schema(implementation = User.class)))
+    @Operation(summary = "Get all users") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "200", description = "User's list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class))))
     })
     @GetMapping(value = "/users", produces = "application/json")
     public ResponseEntity<Set<User>> getUsers() {
@@ -48,8 +49,8 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get user by id")
-    @ApiResponses(value = {
+    @Operation(summary = "Get user by id") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
@@ -61,8 +62,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @Operation(summary = "Search user by name")
-    @ApiResponses(value = {
+    @Operation(summary = "Search user by name") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = User.class)))
     })
     @GetMapping(value = "/users/name", produces = "application/json")
@@ -73,8 +74,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get the object of the user who has logged in through email and password")
-    @ApiResponses(value = {
+    @Operation(summary = "Get the object of the user who has logged in through email and password") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "401", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
@@ -86,9 +87,9 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get the user's products history")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The history has been obtained correctly", content = @Content(schema = @Schema(implementation = User.class))),
+    @Operation(summary = "Get the user's products history") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "200", description = "The history has been obtained correctly", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class)))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/users/{id}/history", produces = "application/json")
@@ -99,8 +100,8 @@ public class UserController {
         return new ResponseEntity<>(history, HttpStatus.OK);
     }
 
-    @Operation(summary = "Register a new user")
-    @ApiResponses(value = {
+    @Operation(summary = "Register a new user") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "201", description = "User registered", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "200", description = "There is already a user with this name or email", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "400", description = "Required fields have not been completed", content = @Content(schema = @Schema(implementation = Response.class)))
@@ -113,8 +114,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Add a product to the wishlist")
-    @ApiResponses(value = {
+    @Operation(summary = "Add a product to the wishlist") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "201", description = "Product successfully added to the wishlist", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
@@ -128,8 +129,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Add a product to the history")
-    @ApiResponses(value = {
+    @Operation(summary = "Add a product to the history") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "201", description = "The product has been successfully registered in the history", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
@@ -142,8 +143,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Make a username change identified by your id")
-    @ApiResponses(value = {
+    @Operation(summary = "Make a username change identified by your id") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "username changed", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "200", description = "There is already a user with this name", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
@@ -156,8 +157,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @Operation(summary = "Make a password change to a user identified by his id and password")
-    @ApiResponses(value = {
+    @Operation(summary = "Make a password change to a user identified by his id and password") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "Password changed", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "401", description = "The identification is incorrect", content = @Content(schema = @Schema(implementation = Response.class)))
@@ -170,8 +171,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete an user identified by his id and password")
-    @ApiResponses(value = {
+    @Operation(summary = "Delete an user identified by his id and password") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "User deleted", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "401", description = "The identification is incorrect", content = @Content(schema = @Schema(implementation = Response.class)))
@@ -184,8 +185,8 @@ public class UserController {
         return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
     }
 
-    @Operation(summary = "Remove a product from the user's wishlist")
-    @ApiResponses(value = {
+    @Operation(summary = "Remove a product from the user's wishlist") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "Product deleted from wishlist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
