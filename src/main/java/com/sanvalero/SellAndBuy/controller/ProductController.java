@@ -9,6 +9,7 @@ import com.sanvalero.SellAndBuy.response.Response;
 import com.sanvalero.SellAndBuy.service.ProductService;
 import com.sanvalero.SellAndBuy.util.ConstantUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,9 +36,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Operation(summary = "Get all products")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(schema = @Schema(implementation = Product.class)))
+    @Operation(summary = "Get all products") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class))))
     })
     @GetMapping(value = "/products", produces = "application/json")
     public ResponseEntity<Set<Product>> getProducts() {
@@ -47,8 +48,8 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get product by id")
-    @ApiResponses(value = {
+    @Operation(summary = "Get product by id") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "Product found", content = @Content(schema = @Schema(implementation = Product.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
@@ -60,9 +61,22 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @Operation(summary = "Search products by category")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(schema = @Schema(implementation = Product.class)))
+    @Operation(summary = "Get a user's product list") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "200", description = "The list of products has been obtained correctly", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class)))),
+            @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
+    })
+    @GetMapping(value = "/users/{id}/products", produces = "application/json")
+    public ResponseEntity<List<Product>> getProductsByUser(@PathVariable long id) {
+        logger.info("Start getProductsByUser");
+        List<Product> products = productService.findAllByUser(id);
+        logger.info("End getProductsByUser");
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search products by category") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class))))
     })
     @GetMapping(value = "/products/category", produces = "application/json")
     public ResponseEntity<List<Product>> getProductsByCategory(@RequestParam(name = "category", defaultValue = "") String category) {
@@ -72,9 +86,9 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @Operation(summary = "Search products by name")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(schema = @Schema(implementation = Product.class))),
+    @Operation(summary = "Search products by name") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
+            @ApiResponse(responseCode = "200", description = "Product's list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class)))),
             @ApiResponse(responseCode = "200", description = "It has been searched by a name composed of more than two words", content = @Content(schema = @Schema(implementation = Response.class)))
     })
     @GetMapping(value = "/products/name", produces = "application/json")
@@ -85,8 +99,8 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @Operation(summary = "Add a new product")
-    @ApiResponses(value = {
+    @Operation(summary = "Add a new product") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "201", description = "Product was added", content = @Content(schema = @Schema(implementation = Product.class))),
             @ApiResponse(responseCode = "404", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
@@ -98,8 +112,8 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Modify a registered product, identified by id")
-    @ApiResponses(value = {
+    @Operation(summary = "Modify a registered product, identified by id") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "Product was modified", content = @Content(schema = @Schema(implementation = Product.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })
@@ -111,8 +125,8 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @Operation(summary = "Delete a product by id")
-    @ApiResponses(value = {
+    @Operation(summary = "Delete a product by id") // Description of the operation
+    @ApiResponses(value = { // Possible answers and the type of content
             @ApiResponse(responseCode = "200", description = "Product was deleted", content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "The product does not exist", content = @Content(schema = @Schema(implementation = Response.class)))
     })

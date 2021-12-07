@@ -14,6 +14,7 @@ public interface ProductService {
 
     Set<Product> findAll();
     Product findById(long id);
+    List<Product> findAllByUser(long userId);
     List<Product> findByCategory(String category);
     List<Product> findByName(String name);
     Product addProduct(long userId, ProductDTO productDTO);
